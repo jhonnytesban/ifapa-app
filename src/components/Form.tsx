@@ -1,12 +1,15 @@
 import { BaseSyntheticEvent, useEffect, useState } from 'react'
-import { Province, Station } from '../interfaces/interfaces'
+import { weatherData, Province, Station } from '../interfaces/interfaces'
+import Table from './Table'
 
 const Form = () => {
   const [provinces, setProvinces] = useState<Province[]>([])
   const [stations, setStations] = useState<Station[]>([])
+  const [infoWeatherData, setInfoWeatherData] = useState<weatherData>()
   const [buttonDisabled, setButtonDisabled] = useState<undefined | boolean>(true)
+  const [stationDeactive, setStationDeactive] = useState<boolean>(true)
 
-  useEffect(() => {
+  useEffect((): void => {
     fetch('https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/provincias')
       .then( res =>  res.json())
       .then( (provincesList: Province[]) => {
@@ -16,7 +19,7 @@ const Form = () => {
       .catch(err => console.log(err))
   }, [])
 
-  const handleSubmit = (event: BaseSyntheticEvent): void => {
+  const handleProvince = (event: BaseSyntheticEvent): void => {
     event.preventDefault();
     if (!event.target.value) {
       setStations([])
@@ -32,29 +35,59 @@ const Form = () => {
       })
   }
 
+  const handleStation = (event: BaseSyntheticEvent): void => {
+    event.preventDefault()
+    const [stationData] = stations.filter((station) => station.codigoEstacion == event.target.value)
+    if (!stationData.activa) {
+      setStationDeactive(false)
+    }
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1
+    const day = new Date().getDate() - 1
+    const date =`${year}-${month}-${day}`
+    fetch(`https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/datosdiarios/${stationData.provincia.id}/${stationData?.codigoEstacion}/${date}/true`)
+      .then((res) => res.json())
+      .then((data) => setInfoWeatherData(data))
+  }
+
   return (
-    <form className="App" onSubmit={handleSubmit} >
-      <select onChange={handleSubmit}>
-        <option value="">-- Provincias --</option>
+    <>
+      <form className="App" >
+        <select onChange={handleProvince}>
+          <option value="">-- Provincias --</option>
+          {
+            provinces.map((province) => {
+              return (
+                <option value={province.id} key={province.id} >{province.nombre}</option>
+              )
+            })
+          }
+        </select>
+        <select onChange={handleStation} disabled={buttonDisabled}>
+          <option value="">-- Estaciones de Localidades --</option>
+          {
+            stations.map((station) => {
+              return (
+                <option key={station.codigoEstacion} value={station.codigoEstacion}>{station.nombre}</option>
+              )
+            })
+          }
+        </select>
         {
-          provinces.map((province) => {
-            return (
-              <option value={province.id} key={province.id} >{province.nombre}</option>
-            )
-          })
+          !stationDeactive && (
+            <div>
+              <button onClick={() => setStationDeactive(true)} >X</button>
+              <p>La estación no está activa</p>
+            </div>
+          )
         }
-      </select>
-      <select disabled={buttonDisabled}>
-        <option value="">-- Estaciones de Localidades</option>
-        {
-          stations.map((station) => {
-            return (
-              <option key={station.codigoEstacion} value={station.codigoEstacion}>{station.nombre}</option>
-            )
-          })
-        }
-      </select>
-    </form>
+      </form>
+      {
+        infoWeatherData && (
+          <Table weatherData={infoWeatherData}/>
+        )
+      }
+    </>
   );
 }
 
