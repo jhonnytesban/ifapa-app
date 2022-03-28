@@ -1,3 +1,9 @@
+.container-table{
+  /* width: 100%; */
+  padding: 1rem;
+  overflow: scroll;
+}
+
 .table{
   border: 1px solid black;
   border-radius: 5px;
@@ -18,10 +24,12 @@
 }
 
 .head-cell{
+  border: 1px solid #666;
   padding: .5rem 1rem;
 }
 
 .body-cell{
   text-align: center;
+  border: 1px solid #666;
   padding: .5rem;
 }

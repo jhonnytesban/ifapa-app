@@ -1,6 +1,7 @@
 import { BaseSyntheticEvent, useEffect, useState } from 'react'
 import { weatherData, Province, Station } from '../interfaces/interfaces'
 import Table from './Table'
+import '../styles/Form.css'
 
 const Form = () => {
   const [provinces, setProvinces] = useState<Province[]>([])
@@ -19,10 +20,30 @@ const Form = () => {
       .catch(err => console.log(err))
   }, [])
 
+  const handleStation = (event: BaseSyntheticEvent): void => {
+    event.preventDefault()
+    const [stationData] = stations.filter((station) => station.codigoEstacion == event.target.value)
+    if (!stationData.activa) {
+      setStationDeactive(false)
+      setInfoWeatherData(undefined)
+    }
+    const year = new Date().getFullYear()
+    const month = new Date().getMonth() + 1
+    const day = new Date().getDate() - 1
+    const date =`${year}-${month}-${day}`
+    fetch(`https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/datosdiarios/${stationData.provincia.id}/${stationData?.codigoEstacion}/${date}/true`)
+      .then((res) => res.json())
+      .then((data) => {
+        setInfoWeatherData(data)
+        setStationDeactive(true)
+      })
+  }
+
   const handleProvince = (event: BaseSyntheticEvent): void => {
     event.preventDefault();
     if (!event.target.value) {
       setStations([])
+      setInfoWeatherData(undefined)
       setButtonDisabled(true)
       return
     }
@@ -35,53 +56,41 @@ const Form = () => {
       })
   }
 
-  const handleStation = (event: BaseSyntheticEvent): void => {
-    event.preventDefault()
-    const [stationData] = stations.filter((station) => station.codigoEstacion == event.target.value)
-    if (!stationData.activa) {
-      setStationDeactive(false)
-    }
-    const year = new Date().getFullYear()
-    const month = new Date().getMonth() + 1
-    const day = new Date().getDate() - 1
-    const date =`${year}-${month}-${day}`
-    fetch(`https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/datosdiarios/${stationData.provincia.id}/${stationData?.codigoEstacion}/${date}/true`)
-      .then((res) => res.json())
-      .then((data) => setInfoWeatherData(data))
-  }
-
   return (
     <>
-      <form className="App" >
-        <select onChange={handleProvince}>
-          <option value="">-- Provincias --</option>
-          {
-            provinces.map((province) => {
-              return (
-                <option value={province.id} key={province.id} >{province.nombre}</option>
-              )
-            })
-          }
-        </select>
-        <select onChange={handleStation} disabled={buttonDisabled}>
-          <option value="">-- Estaciones de Localidades --</option>
-          {
-            stations.map((station) => {
-              return (
-                <option key={station.codigoEstacion} value={station.codigoEstacion}>{station.nombre}</option>
-              )
-            })
-          }
-        </select>
-        {
-          !stationDeactive && (
-            <div>
-              <button onClick={() => setStationDeactive(true)} >X</button>
-              <p>La estación no está activa</p>
-            </div>
-          )
-        }
-      </form>
+      <div className='container-form'>
+        <h2 className="subtitle">Busca Provincias y Localidades: </h2>
+        <form className="form" >
+          <select className='select-form' onChange={handleProvince}>
+            <option value="">-- Provincias --</option>
+            {
+              provinces.map((province) => {
+                return (
+                  <option value={province.id} key={province.id} >{province.nombre}</option>
+                )
+              })
+            }
+          </select>
+          <select className='select-form' onChange={handleStation} disabled={buttonDisabled}>
+            <option value="">-- Estaciones de Localidades --</option>
+            {
+              stations.map((station) => {
+                return (
+                  <option key={station.codigoEstacion} value={station.codigoEstacion}>{station.nombre}</option>
+                )
+              })
+            }
+          </select>
+        </form>
+      </div>
+      {
+        !stationDeactive && (
+          <div>
+            <button onClick={() => setStationDeactive(true)}>X</button>
+            <p>La estación no está activa</p>
+          </div>
+        )
+      }
       {
         infoWeatherData && (
           <Table weatherData={infoWeatherData}/>

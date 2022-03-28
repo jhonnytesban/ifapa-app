@@ -1,0 +1,10 @@
+.container-form{
+  background-color: rgb(98, 96, 96);
+  text-align: center;
+  padding: .5rem;
+}
+
+.select-form{
+  border-radius: 5px;
+  padding: .2rem;
+}
