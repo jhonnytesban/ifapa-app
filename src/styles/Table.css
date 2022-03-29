@@ -1,14 +1,19 @@
 .container-table{
-  /* width: 100%; */
-  padding: 1rem;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .table{
   border: 1px solid black;
   border-radius: 5px;
   border-collapse: collapse;
-  /* padding: .5rem; */
+  margin: 1rem;
+}
+
+.table-wind{
+  border: 1px solid black;
+  border-radius: 5px;
+  border-collapse: collapse;
+  margin: 1rem;
 }
 
 .caption{
