@@ -8,3 +8,21 @@
   border-radius: 5px;
   padding: .2rem;
 }
+
+.container-error{
+  width: 50%;
+  margin: 1rem auto;
+  position: relative;
+  padding: 2rem 1rem;
+  background-color: rgb(212, 49, 49);
+  color: #eee;
+  border-radius: 5px;
+}
+
+.btn-error{
+  border-radius: 5px;
+  border: none;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}

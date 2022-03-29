@@ -56,6 +56,10 @@ const Form = () => {
       })
   }
 
+  const handleError = () => {
+    setStationDeactive(true);
+  }
+
   return (
     <>
       <div className='container-form'>
@@ -85,9 +89,9 @@ const Form = () => {
       </div>
       {
         !stationDeactive && (
-          <div>
-            <button onClick={() => setStationDeactive(true)}>X</button>
-            <p>La estación no está activa</p>
+          <div className='container-error'>
+            <button className='btn-error' onClick={handleError}>X</button>
+            <p className='text-error'>La estación no está activa</p>
           </div>
         )
       }
