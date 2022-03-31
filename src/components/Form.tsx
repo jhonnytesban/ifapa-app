@@ -1,28 +1,29 @@
-import { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent, useContext, useEffect, useState } from 'react'
 import { weatherData, Province, Station } from '../interfaces/interfaces'
 import Table from './Table'
 import '../styles/Form.css'
+import { AppContext } from '../service/AppContext'
 
 const Form = () => {
-  const [provinces, setProvinces] = useState<Province[]>([])
-  const [stations, setStations] = useState<Station[]>([])
+  const { provinces, setProvinces, stations, setStations } = useContext(AppContext)
+
   const [infoWeatherData, setInfoWeatherData] = useState<weatherData>()
   const [buttonDisabled, setButtonDisabled] = useState<undefined | boolean>(true)
   const [stationDeactive, setStationDeactive] = useState<boolean>(true)
 
   useEffect((): void => {
     fetch('https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/provincias')
-      .then( res =>  res.json())
+      .then( res => res.json())
       .then( (provincesList: Province[]) => {
         const provincesComplete = provincesList.filter((provinceData: Province) => provinceData.id === 4 || provinceData.id === 11 || provinceData.id === 14 || provinceData.id === 18 || provinceData.id === 21 || provinceData.id === 23 || provinceData.id === 29 || provinceData.id === 41)
         setProvinces(provincesComplete)
       })
       .catch(err => console.log(err))
-  }, [])
+  }, [setProvinces])
 
   const handleStation = (event: BaseSyntheticEvent): void => {
     event.preventDefault()
-    const [stationData] = stations.filter((station) => station.codigoEstacion == event.target.value)
+    const [stationData] = stations.filter((station) => station.codigoEstacion === event.target.value)
     if (!stationData.activa) {
       setStationDeactive(false)
       setInfoWeatherData(undefined)
