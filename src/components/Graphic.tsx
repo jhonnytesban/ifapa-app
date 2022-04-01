@@ -1,4 +1,7 @@
-import { useState } from "react"
+import { useContext, useState } from "react";
+// import AnyChart from '../../node_modules/'
+import { AppContext } from "../service/AppContext";
+import { LineChart } from "recharts";
 
 interface FormDate {
   begin: string,
@@ -6,7 +9,15 @@ interface FormDate {
 }
 
 const Graphic = () => {
-  const [formDate, setFormDate] = useState<FormDate>({begin: '', final: ''})
+  const { provinces, stations } = useContext(AppContext);
+
+  const [formDate, setFormDate] = useState<FormDate>({begin: '', final: ''});
+  // const [stage, setStage] = useState()
+
+  // useEffect(() => {
+  //   setStage(anychart.graphics.create())
+  // }, [])
+  
 
   return (
     <>
@@ -14,8 +25,9 @@ const Graphic = () => {
         <input type="date" value={formDate.begin} onChange={(event) => setFormDate({...formDate, begin: event.target.value})}/>
         <input type="date" value={formDate.final} onChange={(event) => setFormDate({...formDate, final: event.target.value})}/>
       </div>
+      <LineChart />
     </>
   )
 }
 
-export default Graphic
+export default Graphic;
