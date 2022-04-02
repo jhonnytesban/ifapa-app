@@ -1,13 +1,12 @@
 import { BaseSyntheticEvent, useContext, useEffect, useState } from 'react'
-import { weatherData, Province, Station } from '../interfaces/interfaces'
+import { Province, Station } from '../interfaces/interfaces'
 import Table from './Table'
 import '../styles/Form.css'
 import { AppContext } from '../service/AppContext'
 
 const Form = () => {
-  const { provinces, setProvinces, stations, setStations } = useContext(AppContext)
+  const { provinces, setProvinces, stations, setStations, infoWeatherData, setInfoWeatherData, setStationData } = useContext(AppContext)
 
-  const [infoWeatherData, setInfoWeatherData] = useState<weatherData>()
   const [buttonDisabled, setButtonDisabled] = useState<undefined | boolean>(true)
   const [stationDeactive, setStationDeactive] = useState<boolean>(true)
 
@@ -24,6 +23,7 @@ const Form = () => {
   const handleStation = (event: BaseSyntheticEvent): void => {
     event.preventDefault()
     const [stationData] = stations.filter((station) => station.codigoEstacion === event.target.value)
+    setStationData(stationData)
     if (!stationData.activa) {
       setStationDeactive(false)
       setInfoWeatherData(undefined)

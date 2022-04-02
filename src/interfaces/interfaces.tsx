@@ -18,7 +18,7 @@ export interface Station {
   yutm: number
 }
 
-export interface weatherData {
+export interface WeatherData {
   bateria: number,
   dia: number,
   dirViento: number,

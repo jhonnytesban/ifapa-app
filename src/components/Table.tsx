@@ -1,8 +1,8 @@
-import { weatherData } from '../interfaces/interfaces'
+import { WeatherData } from '../interfaces/interfaces'
 import '../styles/Table.css'
 
 type Props = {
-  weatherData: weatherData | undefined
+  weatherData: WeatherData | undefined
 }
 
 const Table = ({weatherData}: Props) => {
