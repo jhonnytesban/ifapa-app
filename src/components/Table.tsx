@@ -8,7 +8,7 @@ type Props = {
 const Table = ({weatherData}: Props) => {
   return (
     <div className="container-table">
-      <h2 className="subtitle">Fecha De Los Datos: {weatherData?.fecha}</h2>
+      <h2 className="subtitle">Fecha De Los Datos Disponibles: {weatherData?.fecha}</h2>
       <div className="layout-table">
         <table className='table'>
           <caption className="caption">Datos Del Viento</caption>

@@ -22,21 +22,31 @@ const Form = () => {
 
   const handleStation = (event: BaseSyntheticEvent): void => {
     event.preventDefault()
-    const [stationData] = stations.filter((station) => station.codigoEstacion === event.target.value)
-    setStationData(stationData)
+    const [stationData] = stations.filter((station) => station.codigoEstacion === event.target.value);
+    setStationData(stationData);
     if (!stationData.activa) {
-      setStationDeactive(false)
-      setInfoWeatherData(undefined)
+      setStationDeactive(false);
+      setInfoWeatherData(undefined);
     }
-    const year = new Date().getFullYear()
-    const month = new Date().getMonth() + 1
-    const day = new Date().getDate() - 1
-    const date =`${year}-${month}-${day}`
-    fetch(`https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/datosdiarios/${stationData.provincia.id}/${stationData?.codigoEstacion}/${date}/true`)
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth() + 1;
+    let day = new Date().getDate() - 1;
+    let date =`${year}-${month}-${day}`
+    fetch(`https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/datosdiarios/${stationData.provincia.id}/${stationData?.codigoEstacion}/${date}/false`)
       .then((res) => res.json())
       .then((data) => {
         setInfoWeatherData(data)
         setStationDeactive(true)
+      })
+      .catch(() => {
+        day = day - 1;
+        date =`${year}-${month}-${day}`
+        fetch(`https://www.juntadeandalucia.es/agriculturaypesca/ifapa/riaws/datosdiarios/${stationData.provincia.id}/${stationData?.codigoEstacion}/${date}/false`)
+        .then((res) => res.json())
+        .then((data) => {
+          setInfoWeatherData(data)
+          setStationDeactive(true)
+        })
       })
   }
 
